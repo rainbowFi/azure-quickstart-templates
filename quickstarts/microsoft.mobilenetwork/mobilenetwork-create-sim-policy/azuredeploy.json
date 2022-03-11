@@ -1,0 +1,236 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.1272.37030",
+      "templateHash": "14804730065583073583"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Region where the Mobile Network will be deployed (must match the resource group region)"
+      }
+    },
+    "existingMobileNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Mobile Network to add a sim policy to"
+      }
+    },
+    "existingSliceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing slice to use for sim policy definition"
+      }
+    },
+    "existingDataNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing data network to use for sim policy definition"
+      }
+    },
+    "serviceName": {
+      "type": "string",
+      "defaultValue": "Allow-all-traffic",
+      "metadata": {
+        "description": "The name of the service"
+      }
+    },
+    "serviceUplinkMaximumBitRate": {
+      "type": "string",
+      "defaultValue": "2 Gbps",
+      "metadata": {
+        "description": "The Maximum Bit Rate (MBR) for uploads across all service data flows that will be included in data flow policy rules configured on the generic service"
+      }
+    },
+    "serviceDownlinkMaximumBitRate": {
+      "type": "string",
+      "defaultValue": "2 Gbps",
+      "metadata": {
+        "description": "The Maximum Bit Rate (MBR) for downloads across all service data flows that will be included in data flow policy rules configured on the generic service"
+      }
+    },
+    "servicePrecedence": {
+      "type": "int",
+      "defaultValue": 253,
+      "minValue": 0,
+      "maxValue": 255,
+      "metadata": {
+        "description": "The precendence value for the service being deployed."
+      }
+    },
+    "trafficRuleName": {
+      "type": "string",
+      "defaultValue": "All-traffic",
+      "metadata": {
+        "description": "The name of the traffic rule that will be created for this service."
+      }
+    },
+    "trafficRulePrecedence": {
+      "type": "int",
+      "defaultValue": 253,
+      "minValue": 0,
+      "maxValue": 255,
+      "metadata": {
+        "description": "The precendence value for the traffic rule being created."
+      }
+    },
+    "trafficControlOperation": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Blocked"
+      ],
+      "metadata": {
+        "description": "Whether flows matching this traffic rule are permitted or blocked."
+      }
+    },
+    "flowRuleProtocols": {
+      "type": "array",
+      "defaultValue": [
+        "ip"
+      ],
+      "metadata": {
+        "description": "Which protocols match this traffic rule. This should be either a list of IANA protocol numbers or the special value \"any\""
+      }
+    },
+    "flowRuleDirection": {
+      "type": "string",
+      "defaultValue": "Bidirectional",
+      "allowedValues": [
+        "Uplink",
+        "Downlink",
+        "Bidirectional"
+      ],
+      "metadata": {
+        "description": "The direction of the flow to match with this traffic rule."
+      }
+    },
+    "flowRuleRemoteIpList": {
+      "type": "array",
+      "defaultValue": [
+        "any"
+      ],
+      "metadata": {
+        "description": "The remote IP addresses that UEs will connect to for this flow. This should be either a list of IP addresses or the special value \"any\""
+      }
+    },
+    "simPolicyName": {
+      "type": "string",
+      "defaultValue": "Default-policy",
+      "metadata": {
+        "description": "The name of the SIM policy"
+      }
+    },
+    "ueUplinkMaximumBitRate": {
+      "type": "string",
+      "defaultValue": "2 Gbps",
+      "metadata": {
+        "description": "The Maximum Bit Rate (MBR) for uploads across all data flows for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+      }
+    },
+    "ueDownlinklinkMaximumBitRate": {
+      "type": "string",
+      "defaultValue": "2 Gbps",
+      "metadata": {
+        "description": "The Maximum Bit Rate (MBR) for downloads across all data flows for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+      }
+    },
+    "sessionUplinkMaximumBitRate": {
+      "type": "string",
+      "defaultValue": "2 Gbps",
+      "metadata": {
+        "description": "The Maximum Bit Rate (MBR) for uploads across for a particular session for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+      }
+    },
+    "sessionDownlinkMaximumBitRate": {
+      "type": "string",
+      "defaultValue": "2 Gbps",
+      "metadata": {
+        "description": "The Maximum Bit Rate (MBR) for downloads across for a particular session for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.MobileNetwork/mobileNetworks/services",
+      "apiVersion": "2022-03-01-preview",
+      "name": "[format('{0}/{1}', parameters('existingMobileNetworkName'), parameters('serviceName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "servicePrecedence": "[parameters('servicePrecedence')]",
+        "serviceQosPolicy": {
+          "maximumBitRate": {
+            "uplink": "[parameters('serviceUplinkMaximumBitRate')]",
+            "downlink": "[parameters('serviceDownlinkMaximumBitRate')]"
+          }
+        },
+        "pccRules": [
+          {
+            "ruleName": "[parameters('trafficRuleName')]",
+            "rulePrecedence": "[parameters('trafficRulePrecedence')]",
+            "trafficControl": "[parameters('trafficControlOperation')]",
+            "serviceDataFlowTemplates": [
+              {
+                "templateName": "[parameters('trafficRuleName')]",
+                "protocol": "[parameters('flowRuleProtocols')]",
+                "direction": "[parameters('flowRuleDirection')]",
+                "remoteIpList": "[parameters('flowRuleRemoteIpList')]"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.MobileNetwork/mobileNetworks/simPolicies",
+      "apiVersion": "2022-03-01-preview",
+      "name": "[format('{0}/{1}', parameters('existingMobileNetworkName'), parameters('simPolicyName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ueAmbr": {
+          "uplink": "[parameters('ueUplinkMaximumBitRate')]",
+          "downlink": "[parameters('ueDownlinklinkMaximumBitRate')]"
+        },
+        "defaultSlice": {
+          "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/slices', parameters('existingMobileNetworkName'), parameters('existingSliceName'))]"
+        },
+        "sliceConfigurations": [
+          {
+            "slice": {
+              "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/slices', parameters('existingMobileNetworkName'), parameters('existingSliceName'))]"
+            },
+            "defaultDataNetwork": {
+              "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/dataNetworks', parameters('existingMobileNetworkName'), parameters('existingDataNetworkName'))]"
+            },
+            "dataNetworkConfigurations": [
+              {
+                "dataNetwork": {
+                  "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/dataNetworks', parameters('existingMobileNetworkName'), parameters('existingDataNetworkName'))]"
+                },
+                "sessionAmbr": {
+                  "uplink": "[parameters('sessionUplinkMaximumBitRate')]",
+                  "downlink": "[parameters('sessionDownlinkMaximumBitRate')]"
+                },
+                "allowedServices": [
+                  {
+                    "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/services', parameters('existingMobileNetworkName'), parameters('serviceName'))]"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.MobileNetwork/mobileNetworks/services', parameters('existingMobileNetworkName'), parameters('serviceName'))]"
+      ]
+    }
+  ]
+}
