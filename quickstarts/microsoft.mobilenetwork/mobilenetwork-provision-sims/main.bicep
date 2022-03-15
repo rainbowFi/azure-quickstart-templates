@@ -1,7 +1,7 @@
-@description('Region where the Mobile Network will be deployed (must match the resource group region)')
+@description('Region in which the mobile network is deployed (must match the resource group region)')
 param location string = resourceGroup().location
 
-@description('Name of the Mobile Network to add a sim policy to')
+@description('Name of the mobile network for which you are provisioning SIMs')
 param existingMobileNetworkName string
 
 @description('An array containing properties of the SIM(s) you wish to create. See [Provision Sims](https://docs.microsoft.com/en-gb/azure/private-5g-core/provision-sims-azure-portal) for a full description of the required properties and their format.')

@@ -1,76 +1,79 @@
 @description('Region where the Mobile Network will be deployed (must match the resource group region)')
 param location string = resourceGroup().location
 
-@description('Name of the Mobile Network to add a sim policy to')
+@description('Name of the Mobile Network to add a SIM policy to')
 param existingMobileNetworkName string
 
-@description('Name of the existing slice to use for sim policy definition')
+@description('Name of the existing slice to use for the SIM policy')
 param existingSliceName string
 
-@description('Name of the existing data network to use for sim policy definition')
+@description('Name of the existing data network to use for the SIM policy')
 param existingDataNetworkName string
 
 @description('The name of the service')
-param serviceName string = 'Allow-all-traffic'
+param serviceName string = 'service_traffic_limits'
 
-@description('The Maximum Bit Rate (MBR) for uploads across all service data flows that will be included in data flow policy rules configured on the generic service')
-param serviceUplinkMaximumBitRate string = '2 Gbps'
+@description('The maximum bit rate (MBR) for uploads across all service data flows that match data flow policy rules configured on the generic service')
+param serviceMaximumBitRateUplink string = '10 Mbps'
 
-@description('The Maximum Bit Rate (MBR) for downloads across all service data flows that will be included in data flow policy rules configured on the generic service')
-param serviceDownlinkMaximumBitRate string = '2 Gbps'
+@description('The maximum bit rate (MBR) for downloads across all service data flows that match data flow policy rules configured on the generic service')
+param serviceMaximumBitRateDownlink string = '15 Mbps'
 
-@description('The precendence value for the service being deployed.')
+@description('The precedence value for the service being deployed.')
 @maxValue(255)
 @minValue(0)
-param servicePrecedence int = 253
+param servicePrecedence int = 250
 
-@description('The name of the traffic rule that will be created for this service.')
-param trafficRuleName string = 'All-traffic'
+@description('The name of the data flow policy rule that will be created for this service.')
+param dataFlowPolicyRuleName string = 'rule_bidirectional_limits'
 
-@description('The precendence value for the traffic rule being created.')
+@description('The precedence value for the data flow policy rule being created.')
 @maxValue(255)
 @minValue(0)
-param trafficRulePrecedence int = 253
+param dataFlowPolicyRulePrecedence int = 22
 
-@description('Whether flows matching this traffic rule are permitted or blocked.')
+@description('Whether flows matching this data flow policy rule are permitted or blocked.')
 @allowed([
   'Enabled'
   'Blocked'
 ])
-param trafficControlOperation string = 'Enabled'
+param dataFlowPolicyRuleTrafficControl string = 'Enabled'
 
-@description('Which protocols match this traffic rule. This should be either a list of IANA protocol numbers or the special value "any"')
-param flowRuleProtocols array = [
+@description('Which protocols match this data flow policy rule. This should be either a list of IANA protocol numbers or the special value "ip"')
+param dataFlowTemplateProtocols array = [
   'ip'
 ]
 
-@description('The direction of the flow to match with this traffic rule.')
+@description('The name of the data flow policy rule that will be created for this service.')
+param dataFlowTemplateName string = 'ip_traffic'
+
+@description('The direction of the flow to match with this data flow policy rule.')
 @allowed([
   'Uplink'
   'Downlink'
   'Bidirectional'
 ])
-param flowRuleDirection string = 'Bidirectional'
+param dataFlowTemplateDirection string = 'Bidirectional'
 
 @description('The remote IP addresses that UEs will connect to for this flow. This should be either a list of IP addresses or the special value "any"')
-param flowRuleRemoteIpList array = [
+param dataFlowTemplateRemoteIps array = [
   'any'
 ]
 
 @description('The name of the SIM policy')
-param simPolicyName string = 'Default-policy'
+param simPolicyName string = 'sim-policy-1'
 
-@description('The Maximum Bit Rate (MBR) for uploads across all data flows for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply')
-param ueUplinkMaximumBitRate string = '2 Gbps'
+@description('The UE aggregated maximum bit rate (UE-AMBR) for uploads across all non-GBR QoS flows for a particular UE')
+param totalBandwidthAllowedUplink string = '10 Gbps'
 
-@description('The Maximum Bit Rate (MBR) for downloads across all data flows for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply')
-param ueDownlinklinkMaximumBitRate string = '2 Gbps'
+@description('The UE aggregated maximum bit rate (UE-AMBR) for downloads across all non-GBR QoS flows for a particular UE')
+param totalBandwidthAllowedDownlink string = '10 Gbps'
 
-@description('The Maximum Bit Rate (MBR) for uploads across for a particular session for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply')
-param sessionUplinkMaximumBitRate string = '2 Gbps'
+@description('The session aggregated maximum bit rate (Session-AMBR) for uploads across all non-GBR QoS flows of an individual PDU session involving a particular UE')
+param sessionAggregateMaximumBitRateUplink string = '2 Gbps'
 
-@description('The Maximum Bit Rate (MBR) for downloads across for a particular session for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply')
-param sessionDownlinkMaximumBitRate string = '2 Gbps'
+@description('The session aggregated maximum bit rate (Session-AMBR) for downloads across all non-GBR QoS flows of an individual PDU session involving a particular UE')
+param sessionAggregateMaximumBitRateDownlink string = '2 Gbps'
 
 resource existingMobileNetwork 'Microsoft.MobileNetwork/mobileNetworks@2022-03-01-preview' existing = {
   name: existingMobileNetworkName
@@ -90,21 +93,21 @@ resource existingMobileNetwork 'Microsoft.MobileNetwork/mobileNetworks@2022-03-0
       servicePrecedence: servicePrecedence
       serviceQosPolicy: {
         maximumBitRate: {
-          uplink: serviceUplinkMaximumBitRate
-          downlink: serviceDownlinkMaximumBitRate
+          uplink: serviceMaximumBitRateUplink
+          downlink: serviceMaximumBitRateDownlink
         }
       }
       pccRules: [
         {
-          ruleName: trafficRuleName
-          rulePrecedence: trafficRulePrecedence
-          trafficControl: trafficControlOperation
+          ruleName: dataFlowPolicyRuleName
+          rulePrecedence: dataFlowPolicyRulePrecedence
+          trafficControl: dataFlowPolicyRuleTrafficControl
           serviceDataFlowTemplates: [
             {
-              templateName: trafficRuleName
-              protocol: flowRuleProtocols
-              direction: flowRuleDirection
-              remoteIpList: flowRuleRemoteIpList
+              templateName: dataFlowTemplateName
+              protocol: dataFlowTemplateProtocols
+              direction: dataFlowTemplateDirection
+              remoteIpList: dataFlowTemplateRemoteIps
             }
           ]
         }
@@ -117,8 +120,8 @@ resource existingMobileNetwork 'Microsoft.MobileNetwork/mobileNetworks@2022-03-0
     location: location
     properties: {
       ueAmbr: {
-        uplink: ueUplinkMaximumBitRate
-        downlink: ueDownlinklinkMaximumBitRate
+        uplink: totalBandwidthAllowedUplink
+        downlink: totalBandwidthAllowedDownlink
       }
       defaultSlice: {
         id: existingSlice.id
@@ -137,8 +140,8 @@ resource existingMobileNetwork 'Microsoft.MobileNetwork/mobileNetworks@2022-03-0
                 id: existingDataNetwork.id
               }
               sessionAmbr: {
-                uplink: sessionUplinkMaximumBitRate
-                downlink: sessionDownlinkMaximumBitRate
+                uplink: sessionAggregateMaximumBitRateUplink
+                downlink: sessionAggregateMaximumBitRateDownlink
               }
               allowedServices: [
                 {

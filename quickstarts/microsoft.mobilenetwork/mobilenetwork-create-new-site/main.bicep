@@ -1,25 +1,25 @@
-@description('Region where the Mobile Network will be deployed (must match the resource group region)')
+@description('Region where the mobile network will be deployed (must match the resource group region)')
 param location string = resourceGroup().location
 
-@description('Name of the Mobile Network to add a sim policy to')
+@description('Name of the mobile network to which you are adding a site')
 param existingMobileNetworkName string
 
-@description('Name of the existing data network to use for sim policy definition')
+@description('Name of the existing data network to which the mobile network connects')
 param existingDataNetworkName string
 
 @description('The name for the site')
 param siteName string = 'myExampleSite'
 
-@description('The name of the control plane interface on the access network. In 5G networks this is called the N2 interface whereas in 4G networks this is called the S1-MME interface. This should match one of the interfaces configured on your Azure Stack Edge machine.')
+@description('The name of the control plane interface on the access network. In 5G networks this is called the N2 interface, whereas in 4G networks this is called the S1-MME interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device.')
 param controlPlaneAccessInterfaceName string = ''
 
-@description('The IP address of the control plane interface on the access network. In 5G networks this is called the N2 interface whereas in 4G networks this is called the S1-MME interface.')
+@description('The IP address of the control plane interface on the access network. In 5G networks this is called the N2 interface, whereas in 4G networks this is called the S1-MME interface.')
 param controlPlaneAccessIpAddress string
 
-@description('The logical name of the user plane interface on the access network. In 5G networks this is called the N3 interface whereas in 4G networks this is called the S1-U interface. This should match one of the interfaces configured on your Azure Stack Edge machine.')
+@description('The logical name of the user plane interface on the access network. In 5G networks this is called the N3 interface, whereas in 4G networks this is called the S1-U interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device.')
 param dataPlaneAccessInterfaceName string = ''
 
-@description('The IP address of the user plane interface on the access network. In 5G networks this is called the N3 interface whereas in 4G networks this is called the S1-U interface.')
+@description('The IP address of the user plane interface on the access network. In 5G networks this is called the N3 interface, whereas in 4G networks this is called the S1-U interface.')
 param dataPlaneAccessInterfaceIpAddress string
 
 @description('The network address of the access subnet in CIDR notation')
@@ -28,10 +28,10 @@ param accessSubnet string
 @description('The access subnet default gateway')
 param accessGateway string
 
-@description('The logical name of the user plane interface on the data network. In 5G networks this is called the N6 interface whereas in 4G networks this is called the SGi interface. This should match one of the interfaces configured on your Azure Stack Edge machine.')
+@description('The logical name of the user plane interface on the data network. In 5G networks this is called the N6 interface, whereas in 4G networks this is called the SGi interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device.')
 param userPlaneDataInterfaceName string = ''
 
-@description('The IP address of the user plane interface on the data network. In 5G networks this is called the N6 interface whereas in 4G networks this is called the SGi interface.')
+@description('The IP address of the user plane interface on the data network. In 5G networks this is called the N6 interface, whereas in 4G networks this is called the SGi interface.')
 param userPlaneDataInterfaceIpAddress string
 
 @description('The network address of the data subnet in CIDR notation')
@@ -53,7 +53,7 @@ param coreNetworkTechnology string = '5GC'
 ])
 param naptEnabled string
 
-@description('The resource ID of the customLocation representing the ASE device where the packet core will be deployed. If this parameter is not specified then the 5G core will be created but will not be deployed to an ASE. [Collect custom location information](https://docs.microsoft.com/en-gb/azure/private-5g-core/collect-required-information-for-a-site#collect-custom-location-information) explains which value to specify here.')
+@description('The resource ID of the custom location that targets the Azure Kubernetes Service on Azure Stack HCI (AKS-HCI) cluster on the Azure Stack Edge Pro device in the site. If this parameter is not specified, the packet core instance will be created but will not be deployed to an ASE. [Collect custom location information](https://docs.microsoft.com/en-gb/azure/private-5g-core/collect-required-information-for-a-site#collect-custom-location-information) explains which value to specify here.')
 param customLocation string = ''
 
 resource existingMobileNetwork 'Microsoft.MobileNetwork/mobileNetworks@2022-03-01-preview' existing = {
