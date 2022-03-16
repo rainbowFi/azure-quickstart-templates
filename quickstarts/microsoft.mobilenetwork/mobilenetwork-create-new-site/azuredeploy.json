@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1272.37030",
-      "templateHash": "83934044043549023"
+      "templateHash": "8453568382217152644"
     }
   },
   "parameters": {
@@ -13,19 +13,19 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Region where the Mobile Network will be deployed (must match the resource group region)"
+        "description": "Region where the mobile network will be deployed (must match the resource group region)"
       }
     },
     "existingMobileNetworkName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the Mobile Network to add a sim policy to"
+        "description": "Name of the mobile network to which you are adding a site"
       }
     },
     "existingDataNetworkName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the existing data network to use for sim policy definition"
+        "description": "Name of the existing data network to which the mobile network connects"
       }
     },
     "siteName": {
@@ -39,26 +39,26 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The name of the control plane interface on the access network. In 5G networks this is called the N2 interface whereas in 4G networks this is called the S1-MME interface. This should match one of the interfaces configured on your Azure Stack Edge machine."
+        "description": "The name of the control plane interface on the access network. In 5G networks this is called the N2 interface, whereas in 4G networks this is called the S1-MME interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device."
       }
     },
     "controlPlaneAccessIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the control plane interface on the access network. In 5G networks this is called the N2 interface whereas in 4G networks this is called the S1-MME interface."
+        "description": "The IP address of the control plane interface on the access network. In 5G networks this is called the N2 interface, whereas in 4G networks this is called the S1-MME interface."
       }
     },
-    "dataPlaneAccessInterfaceName": {
+    "userPlaneAccessInterfaceName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The logical name of the user plane interface on the access network. In 5G networks this is called the N3 interface whereas in 4G networks this is called the S1-U interface. This should match one of the interfaces configured on your Azure Stack Edge machine."
+        "description": "The logical name of the user plane interface on the access network. In 5G networks this is called the N3 interface, whereas in 4G networks this is called the S1-U interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device."
       }
     },
-    "dataPlaneAccessInterfaceIpAddress": {
+    "userPlaneAccessInterfaceIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the user plane interface on the access network. In 5G networks this is called the N3 interface whereas in 4G networks this is called the S1-U interface."
+        "description": "The IP address of the user plane interface on the access network. In 5G networks this is called the N3 interface, whereas in 4G networks this is called the S1-U interface."
       }
     },
     "accessSubnet": {
@@ -77,13 +77,13 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The logical name of the user plane interface on the data network. In 5G networks this is called the N6 interface whereas in 4G networks this is called the SGi interface. This should match one of the interfaces configured on your Azure Stack Edge machine."
+        "description": "The logical name of the user plane interface on the data network. In 5G networks this is called the N6 interface, whereas in 4G networks this is called the SGi interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device."
       }
     },
     "userPlaneDataInterfaceIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the user plane interface on the data network. In 5G networks this is called the N6 interface whereas in 4G networks this is called the SGi interface."
+        "description": "The IP address of the user plane interface on the data network. In 5G networks this is called the N6 interface, whereas in 4G networks this is called the SGi interface."
       }
     },
     "userPlaneDataInterfaceSubnet": {
@@ -125,7 +125,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The resource ID of the customLocation representing the ASE device where the packet core will be deployed. If this parameter is not specified then the 5G core will be created but will not be deployed to an ASE. [Collect custom location information](https://docs.microsoft.com/en-gb/azure/private-5g-core/collect-required-information-for-a-site#collect-custom-location-information) explains which value to specify here."
+        "description": "The resource ID of the custom location that targets the Azure Kubernetes Service on Azure Stack HCI (AKS-HCI) cluster on the Azure Stack Edge Pro device in the site. If this parameter is not specified, the packet core instance will be created but will not be deployed to an ASE. [Collect custom location information](https://docs.microsoft.com/en-gb/azure/private-5g-core/collect-required-information-for-a-site#collect-custom-location-information) explains which value to specify here."
       }
     }
   },
@@ -180,11 +180,11 @@
       "name": "[format('{0}/{1}', parameters('siteName'), parameters('siteName'))]",
       "location": "[parameters('location')]",
       "properties": {
-        "dataPlaneAccessInterface": {
-          "ipv4Address": "[parameters('dataPlaneAccessInterfaceIpAddress')]",
+        "userPlaneAccessInterface": {
+          "ipv4Address": "[parameters('userPlaneAccessInterfaceIpAddress')]",
           "ipv4Subnet": "[parameters('accessSubnet')]",
           "ipv4Gateway": "[parameters('accessGateway')]",
-          "name": "[parameters('dataPlaneAccessInterfaceName')]"
+          "name": "[parameters('userPlaneAccessInterfaceName')]"
         }
       },
       "dependsOn": [
@@ -201,7 +201,9 @@
           "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks', parameters('existingMobileNetworkName'))]"
         },
         "coreNetworkTechnology": "[parameters('coreNetworkTechnology')]",
-        "customLocation": "[parameters('customLocation')]",
+        "customLocation": {
+          "id": "[parameters('customLocation')]"
+        },
         "controlPlaneAccessInterface": {
           "ipv4Address": "[parameters('controlPlaneAccessIpAddress')]",
           "ipv4Subnet": "[parameters('accessSubnet')]",

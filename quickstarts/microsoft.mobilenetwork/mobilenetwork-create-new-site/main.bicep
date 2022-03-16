@@ -16,11 +16,11 @@ param controlPlaneAccessInterfaceName string = ''
 @description('The IP address of the control plane interface on the access network. In 5G networks this is called the N2 interface whereas in 4G networks this is called the S1-MME interface.')
 param controlPlaneAccessIpAddress string
 
-@description('The logical name of the user plane interface on the access network. In 5G networks this is called the N3 interface whereas in 4G networks this is called the S1-U interface. This should match one of the interfaces configured on your Azure Stack Edge machine.')
-param dataPlaneAccessInterfaceName string = ''
+@description('The logical name of the user plane interface on the access network. In 5G networks this is called the N3 interface, whereas in 4G networks this is called the S1-U interface. This should match one of the interfaces configured on your Azure Stack Edge Pro device.')
+param userPlaneAccessInterfaceName string = ''
 
-@description('The IP address of the user plane interface on the access network. In 5G networks this is called the N3 interface whereas in 4G networks this is called the S1-U interface.')
-param dataPlaneAccessInterfaceIpAddress string
+@description('The IP address of the user plane interface on the access network. In 5G networks this is called the N3 interface, whereas in 4G networks this is called the S1-U interface.')
+param userPlaneAccessInterfaceIpAddress string
 
 @description('The network address of the access subnet in CIDR notation')
 param accessSubnet string
@@ -87,7 +87,9 @@ resource examplePacketCoreControlPlane 'Microsoft.MobileNetwork/packetCoreContro
       id: existingMobileNetwork.id
     }
     coreNetworkTechnology: coreNetworkTechnology
-    customLocation: customLocation
+    customLocation: {
+      id: customLocation
+    }
     controlPlaneAccessInterface: {
       ipv4Address: controlPlaneAccessIpAddress
       ipv4Subnet: accessSubnet
@@ -100,11 +102,11 @@ resource examplePacketCoreControlPlane 'Microsoft.MobileNetwork/packetCoreContro
     name: siteName
     location: location
     properties: {
-      dataPlaneAccessInterface: {
-        ipv4Address: dataPlaneAccessInterfaceIpAddress
+      userPlaneAccessInterface: {
+        ipv4Address: userPlaneAccessInterfaceIpAddress
         ipv4Subnet: accessSubnet
         ipv4Gateway: accessGateway
-        name: dataPlaneAccessInterfaceName
+        name: userPlaneAccessInterfaceName
       }
     }
 
