@@ -18,7 +18,7 @@ This template deploys a new site for an existing mobile network.
 
 ## Prerequisites
 
-By default this template does not deploy any resources to the Azure Stack Edge. If you want to deploy to an Azure Stack Edge then you must follow the pre-requisite instructions in the [Private 5G Core documentation](https://docs.microsoft.com/en-gb/azure/private-5g-core/complete-private-mobile-network-prerequisites) before starting the deployment so that you can specify the customLocation parameter.
+By default this template does not deploy any resources to the Azure Stack Edge Pro device. If you want to deploy to an Azure Stack Edge Pro device, you must follow the pre-requisite instructions in the [Private 5G Core documentation](https://docs.microsoft.com/en-gb/azure/private-5g-core/complete-private-mobile-network-prerequisites) before starting the deployment, so that you can specify the customLocation parameter.
 
 ## Deployment steps
 

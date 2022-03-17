@@ -14,7 +14,7 @@
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fquickstarts%2Fmicrosoft.mobilenetwork%2Fmobilenetwork-create-mobile-network%2Fazuredeploy.json)
 [![Visualize](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fquickstarts%2Fmicrosoft.mobilenetwork%2Fmobilenetwork-create-mobile-network%2Fazuredeploy.json)
 
-This template creates a mobile network resource with an associated slice and data network. You can then use other templates in this repository to create sites for running the Private 5G Core software and provision sims and sim policies.
+This template creates a mobile network resource with an associated slice and data network. You can then use other templates in this repository to create sites for running packet core instances, create SIM policies and services, and provision SIMs.
 
 ## Deployment steps
 
