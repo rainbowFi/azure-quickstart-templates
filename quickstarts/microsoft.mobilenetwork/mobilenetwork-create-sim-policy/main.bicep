@@ -11,26 +11,26 @@ param existingSliceName string
 param existingDataNetworkName string
 
 @description('The name of the service')
-param serviceName string = 'service_traffic_limits'
+param serviceName string = 'Allow-all-traffic'
 
 @description('The maximum bit rate (MBR) for uploads across all service data flows that match data flow policy rules configured on the generic service')
-param serviceMaximumBitRateUplink string = '10 Mbps'
+param serviceMaximumBitRateUplink string = '2 Gbps'
 
 @description('The maximum bit rate (MBR) for downloads across all service data flows that match data flow policy rules configured on the generic service')
-param serviceMaximumBitRateDownlink string = '15 Mbps'
+param serviceMaximumBitRateDownlink string = '2 Gbps'
 
 @description('The precedence value for the service being deployed.')
 @maxValue(255)
 @minValue(0)
-param servicePrecedence int = 250
+param servicePrecedence int = 253
 
 @description('The name of the data flow policy rule that will be created for this service.')
-param dataFlowPolicyRuleName string = 'rule_bidirectional_limits'
+param dataFlowPolicyRuleName string = 'All-traffic'
 
 @description('The precedence value for the data flow policy rule being created.')
 @maxValue(255)
 @minValue(0)
-param dataFlowPolicyRulePrecedence int = 22
+param dataFlowPolicyRulePrecedence int = 253
 
 @description('Whether flows matching this data flow policy rule are permitted or blocked.')
 @allowed([
@@ -44,7 +44,7 @@ param dataFlowTemplateProtocols array = [
   'ip'
 ]
 
-@description('The name of the data flow policy rule that will be created for this service.')
+@description('The name of the data flow template that will be created for this service.')
 param dataFlowTemplateName string = 'ip_traffic'
 
 @description('The direction of the flow to match with this data flow policy rule.')
@@ -61,13 +61,13 @@ param dataFlowTemplateRemoteIps array = [
 ]
 
 @description('The name of the SIM policy')
-param simPolicyName string = 'sim-policy-1'
+param simPolicyName string = 'Default-policy'
 
 @description('The UE aggregated maximum bit rate (UE-AMBR) for uploads across all non-GBR QoS flows for a particular UE')
-param totalBandwidthAllowedUplink string = '10 Gbps'
+param totalBandwidthAllowedUplink string = '2 Gbps'
 
 @description('The UE aggregated maximum bit rate (UE-AMBR) for downloads across all non-GBR QoS flows for a particular UE')
-param totalBandwidthAllowedDownlink string = '10 Gbps'
+param totalBandwidthAllowedDownlink string = '2 Gbps'
 
 @description('The session aggregated maximum bit rate (Session-AMBR) for uploads across all non-GBR QoS flows of an individual PDU session involving a particular UE')
 param sessionAggregateMaximumBitRateUplink string = '2 Gbps'
