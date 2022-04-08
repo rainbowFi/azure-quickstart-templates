@@ -40,8 +40,11 @@ param userPlaneDataInterfaceSubnet string
 @description('The data subnet default gateway')
 param userPlaneDataInterfaceGateway string
 
-@description('The network address of the subnet from which IP addresses must be allocated to UEs, given in CIDR notation')
-param ueIpPoolPrefix string
+@description('The network address of the subnet from which dynamic IP addresses must be allocated to UEs, given in CIDR notation. Optional if userEquipmentStaticAddressPoolPrefix is specified. If both are specified, they must be the same size and not overlap.')
+param userEquipmentAddressPoolPrefix string = ''
+
+@description('The network address of the subnet from which static IP addresses must be allocated to UEs, given in CIDR notation. Optional if userEquipmentAddressPoolPrefix is specified. If both are specified, they must be the same size and not overlap.')
+param userEquipmentStaticAddressPoolPrefix string = ''
 
 @description('The mode in which the packet core instance will run')
 param coreNetworkTechnology string = '5GC'
@@ -87,7 +90,7 @@ resource examplePacketCoreControlPlane 'Microsoft.MobileNetwork/packetCoreContro
       id: existingMobileNetwork.id
     }
     coreNetworkTechnology: coreNetworkTechnology
-    customLocation: {
+    customLocation: empty(customLocation) ? null : {
       id: customLocation
     }
     controlPlaneAccessInterface: {
@@ -120,13 +123,16 @@ resource examplePacketCoreControlPlane 'Microsoft.MobileNetwork/packetCoreContro
           ipv4Gateway: userPlaneDataInterfaceGateway
           name: userPlaneDataInterfaceName
         }
-        userEquipmentAddressPoolPrefix: [
-          ueIpPoolPrefix
+        userEquipmentAddressPoolPrefix: empty(userEquipmentAddressPoolPrefix) ? null : [
+          userEquipmentAddressPoolPrefix
+        ]
+        userEquipmentStaticAddressPoolPrefix: empty(userEquipmentStaticAddressPoolPrefix) ? null : [
+          userEquipmentStaticAddressPoolPrefix
         ]
         naptConfiguration: {
           enabled: naptEnabled
         }
       }
     }
-  }  
+  }
 }

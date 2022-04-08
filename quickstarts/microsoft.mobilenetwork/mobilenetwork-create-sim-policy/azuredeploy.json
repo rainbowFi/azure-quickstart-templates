@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1272.37030",
-      "templateHash": "14804730065583073583"
+      "version": "0.4.1318.3566",
+      "templateHash": "7834056659783361586"
     }
   },
   "parameters": {
@@ -19,19 +19,19 @@
     "existingMobileNetworkName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the Mobile Network to add a sim policy to"
+        "description": "Name of the Mobile Network to add a SIM policy to"
       }
     },
     "existingSliceName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the existing slice to use for sim policy definition"
+        "description": "Name of the existing slice to use for the SIM policy"
       }
     },
     "existingDataNetworkName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the existing data network to use for sim policy definition"
+        "description": "Name of the existing data network to use for the SIM policy"
       }
     },
     "serviceName": {
@@ -41,18 +41,18 @@
         "description": "The name of the service"
       }
     },
-    "serviceUplinkMaximumBitRate": {
+    "serviceMaximumBitRateUplink": {
       "type": "string",
       "defaultValue": "2 Gbps",
       "metadata": {
-        "description": "The Maximum Bit Rate (MBR) for uploads across all service data flows that will be included in data flow policy rules configured on the generic service"
+        "description": "The maximum bit rate (MBR) for uploads across all service data flows that match data flow policy rules configured on the generic service"
       }
     },
-    "serviceDownlinkMaximumBitRate": {
+    "serviceMaximumBitRateDownlink": {
       "type": "string",
       "defaultValue": "2 Gbps",
       "metadata": {
-        "description": "The Maximum Bit Rate (MBR) for downloads across all service data flows that will be included in data flow policy rules configured on the generic service"
+        "description": "The maximum bit rate (MBR) for downloads across all service data flows that match data flow policy rules configured on the generic service"
       }
     },
     "servicePrecedence": {
@@ -61,26 +61,26 @@
       "minValue": 0,
       "maxValue": 255,
       "metadata": {
-        "description": "The precendence value for the service being deployed."
+        "description": "The precedence value for the service being deployed."
       }
     },
-    "trafficRuleName": {
+    "dataFlowPolicyRuleName": {
       "type": "string",
       "defaultValue": "All-traffic",
       "metadata": {
-        "description": "The name of the traffic rule that will be created for this service."
+        "description": "The name of the data flow policy rule that will be created for this service."
       }
     },
-    "trafficRulePrecedence": {
+    "dataFlowPolicyRulePrecedence": {
       "type": "int",
       "defaultValue": 253,
       "minValue": 0,
       "maxValue": 255,
       "metadata": {
-        "description": "The precendence value for the traffic rule being created."
+        "description": "The precedence value for the data flow policy rule being created."
       }
     },
-    "trafficControlOperation": {
+    "dataFlowPolicyRuleTrafficControl": {
       "type": "string",
       "defaultValue": "Enabled",
       "allowedValues": [
@@ -88,19 +88,26 @@
         "Blocked"
       ],
       "metadata": {
-        "description": "Whether flows matching this traffic rule are permitted or blocked."
+        "description": "Whether flows matching this data flow policy rule are permitted or blocked."
       }
     },
-    "flowRuleProtocols": {
+    "dataFlowTemplateProtocols": {
       "type": "array",
       "defaultValue": [
         "ip"
       ],
       "metadata": {
-        "description": "Which protocols match this traffic rule. This should be either a list of IANA protocol numbers or the special value \"any\""
+        "description": "Which protocols match this data flow policy rule. This should be either a list of IANA protocol numbers or the special value \"ip\""
       }
     },
-    "flowRuleDirection": {
+    "dataFlowTemplateName": {
+      "type": "string",
+      "defaultValue": "ip_traffic",
+      "metadata": {
+        "description": "The name of the data flow template that will be created for this service."
+      }
+    },
+    "dataFlowTemplateDirection": {
       "type": "string",
       "defaultValue": "Bidirectional",
       "allowedValues": [
@@ -109,10 +116,10 @@
         "Bidirectional"
       ],
       "metadata": {
-        "description": "The direction of the flow to match with this traffic rule."
+        "description": "The direction of the flow to match with this data flow policy rule."
       }
     },
-    "flowRuleRemoteIpList": {
+    "dataFlowTemplateRemoteIps": {
       "type": "array",
       "defaultValue": [
         "any"
@@ -128,32 +135,32 @@
         "description": "The name of the SIM policy"
       }
     },
-    "ueUplinkMaximumBitRate": {
+    "totalBandwidthAllowedUplink": {
       "type": "string",
       "defaultValue": "2 Gbps",
       "metadata": {
-        "description": "The Maximum Bit Rate (MBR) for uploads across all data flows for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+        "description": "The UE aggregated maximum bit rate (UE-AMBR) for uploads across all non-GBR QoS flows for a particular UE"
       }
     },
-    "ueDownlinklinkMaximumBitRate": {
+    "totalBandwidthAllowedDownlink": {
       "type": "string",
       "defaultValue": "2 Gbps",
       "metadata": {
-        "description": "The Maximum Bit Rate (MBR) for downloads across all data flows for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+        "description": "The UE aggregated maximum bit rate (UE-AMBR) for downloads across all non-GBR QoS flows for a particular UE"
       }
     },
-    "sessionUplinkMaximumBitRate": {
+    "sessionAggregateMaximumBitRateUplink": {
       "type": "string",
       "defaultValue": "2 Gbps",
       "metadata": {
-        "description": "The Maximum Bit Rate (MBR) for uploads across for a particular session for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+        "description": "The session aggregated maximum bit rate (Session-AMBR) for uploads across all non-GBR QoS flows of an individual PDU session involving a particular UE"
       }
     },
-    "sessionDownlinkMaximumBitRate": {
+    "sessionAggregateMaximumBitRateDownlink": {
       "type": "string",
       "defaultValue": "2 Gbps",
       "metadata": {
-        "description": "The Maximum Bit Rate (MBR) for downloads across for a particular session for a paricular UE to which the data flow policy rules configured on the generic SIM policy apply"
+        "description": "The session aggregated maximum bit rate (Session-AMBR) for downloads across all non-GBR QoS flows of an individual PDU session involving a particular UE"
       }
     }
   },
@@ -167,21 +174,21 @@
         "servicePrecedence": "[parameters('servicePrecedence')]",
         "serviceQosPolicy": {
           "maximumBitRate": {
-            "uplink": "[parameters('serviceUplinkMaximumBitRate')]",
-            "downlink": "[parameters('serviceDownlinkMaximumBitRate')]"
+            "uplink": "[parameters('serviceMaximumBitRateUplink')]",
+            "downlink": "[parameters('serviceMaximumBitRateDownlink')]"
           }
         },
         "pccRules": [
           {
-            "ruleName": "[parameters('trafficRuleName')]",
-            "rulePrecedence": "[parameters('trafficRulePrecedence')]",
-            "trafficControl": "[parameters('trafficControlOperation')]",
+            "ruleName": "[parameters('dataFlowPolicyRuleName')]",
+            "rulePrecedence": "[parameters('dataFlowPolicyRulePrecedence')]",
+            "trafficControl": "[parameters('dataFlowPolicyRuleTrafficControl')]",
             "serviceDataFlowTemplates": [
               {
-                "templateName": "[parameters('trafficRuleName')]",
-                "protocol": "[parameters('flowRuleProtocols')]",
-                "direction": "[parameters('flowRuleDirection')]",
-                "remoteIpList": "[parameters('flowRuleRemoteIpList')]"
+                "templateName": "[parameters('dataFlowTemplateName')]",
+                "protocol": "[parameters('dataFlowTemplateProtocols')]",
+                "direction": "[parameters('dataFlowTemplateDirection')]",
+                "remoteIpList": "[parameters('dataFlowTemplateRemoteIps')]"
               }
             ]
           }
@@ -195,8 +202,8 @@
       "location": "[parameters('location')]",
       "properties": {
         "ueAmbr": {
-          "uplink": "[parameters('ueUplinkMaximumBitRate')]",
-          "downlink": "[parameters('ueDownlinklinkMaximumBitRate')]"
+          "uplink": "[parameters('totalBandwidthAllowedUplink')]",
+          "downlink": "[parameters('totalBandwidthAllowedDownlink')]"
         },
         "defaultSlice": {
           "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/slices', parameters('existingMobileNetworkName'), parameters('existingSliceName'))]"
@@ -215,8 +222,8 @@
                   "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks/dataNetworks', parameters('existingMobileNetworkName'), parameters('existingDataNetworkName'))]"
                 },
                 "sessionAmbr": {
-                  "uplink": "[parameters('sessionUplinkMaximumBitRate')]",
-                  "downlink": "[parameters('sessionDownlinkMaximumBitRate')]"
+                  "uplink": "[parameters('sessionAggregateMaximumBitRateUplink')]",
+                  "downlink": "[parameters('sessionAggregateMaximumBitRateDownlink')]"
                 },
                 "allowedServices": [
                   {

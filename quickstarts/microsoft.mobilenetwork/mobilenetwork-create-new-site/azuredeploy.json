@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1272.37030",
-      "templateHash": "8453568382217152644"
+      "version": "0.4.1318.3566",
+      "templateHash": "8363244928620322684"
     }
   },
   "parameters": {
@@ -98,10 +98,18 @@
         "description": "The data subnet default gateway"
       }
     },
-    "ueIpPoolPrefix": {
+    "userEquipmentAddressPoolPrefix": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "The network address of the subnet from which IP addresses must be allocated to UEs, given in CIDR notation"
+        "description": "The network address of the subnet from which dynamic IP addresses must be allocated to UEs, given in CIDR notation. Optional if userEquipmentStaticAddressPoolPrefix is specified. If both are specified, they must be the same size and not overlap."
+      }
+    },
+    "userEquipmentStaticAddressPoolPrefix": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The network address of the subnet from which static IP addresses must be allocated to UEs, given in CIDR notation. Optional if userEquipmentAddressPoolPrefix is specified. If both are specified, they must be the same size and not overlap."
       }
     },
     "coreNetworkTechnology": {
@@ -162,9 +170,8 @@
           "ipv4Gateway": "[parameters('userPlaneDataInterfaceGateway')]",
           "name": "[parameters('userPlaneDataInterfaceName')]"
         },
-        "userEquipmentAddressPoolPrefix": [
-          "[parameters('ueIpPoolPrefix')]"
-        ],
+        "userEquipmentAddressPoolPrefix": "[if(empty(parameters('userEquipmentAddressPoolPrefix')), null(), createArray(parameters('userEquipmentAddressPoolPrefix')))]",
+        "userEquipmentStaticAddressPoolPrefix": "[if(empty(parameters('userEquipmentStaticAddressPoolPrefix')), null(), createArray(parameters('userEquipmentStaticAddressPoolPrefix')))]",
         "naptConfiguration": {
           "enabled": "[parameters('naptEnabled')]"
         }
@@ -201,9 +208,7 @@
           "id": "[resourceId('Microsoft.MobileNetwork/mobileNetworks', parameters('existingMobileNetworkName'))]"
         },
         "coreNetworkTechnology": "[parameters('coreNetworkTechnology')]",
-        "customLocation": {
-          "id": "[parameters('customLocation')]"
-        },
+        "customLocation": "[if(empty(parameters('customLocation')), null(), createObject('id', parameters('customLocation')))]",
         "controlPlaneAccessInterface": {
           "ipv4Address": "[parameters('controlPlaneAccessIpAddress')]",
           "ipv4Subnet": "[parameters('accessSubnet')]",
