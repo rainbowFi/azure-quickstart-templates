@@ -1,0 +1,12 @@
+{
+    "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+    "itemDisplayName": "Upgrade the packet core software on a Private 5G Core site",
+    "description": "This template upgrades the packet core software running on a particular site in an Azure Private 5G Core network. It will cause a service outage of up to one hour, so should only be deployed in a maintenance window.",
+    "summary": "Upgrade the packet core software running on a Private 5G Core site.",
+    "githubUsername": "rainbowFi",
+    "dateUpdated": "2022-04-28",
+    "type": "QuickStart",
+    "environments": [
+        "AzureCloud"
+    ]
+  }

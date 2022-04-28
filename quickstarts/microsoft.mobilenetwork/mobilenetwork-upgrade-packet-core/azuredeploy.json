@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.5.6.12127",
+      "templateHash": "34879315917764183"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Region where the mobile network will be deployed (must match the resource group region)"
+      }
+    },
+    "existingPacketCoreControlPlaneName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing packet core control plane deployment in the mobile network"
+      }
+    },
+    "packetCoreVersionString": {
+      "type": "string",
+      "metadata": {
+        "description": "The packet core control plane software version to install on the site"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.MobileNetwork/packetCoreControlPlanes",
+      "apiVersion": "2022-03-01-preview",
+      "name": "[parameters('existingPacketCoreControlPlaneName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "version": "[parameters('packetCoreVersionString')]",
+        "mobileNetwork": {
+          "id": "[reference(resourceId('Microsoft.MobileNetwork/packetCoreControlPlanes', parameters('existingPacketCoreControlPlaneName')), '2022-03-01-preview').mobileNetwork.id]"
+        },
+        "controlPlaneAccessInterface": {
+          "ipv4Address": "[reference(resourceId('Microsoft.MobileNetwork/packetCoreControlPlanes', parameters('existingPacketCoreControlPlaneName')), '2022-03-01-preview').controlPlaneAccessInterface.ipv4Address]",
+          "ipv4Subnet": "[reference(resourceId('Microsoft.MobileNetwork/packetCoreControlPlanes', parameters('existingPacketCoreControlPlaneName')), '2022-03-01-preview').controlPlaneAccessInterface.ipv4Subnet]",
+          "ipv4Gateway": "[reference(resourceId('Microsoft.MobileNetwork/packetCoreControlPlanes', parameters('existingPacketCoreControlPlaneName')), '2022-03-01-preview').controlPlaneAccessInterface.ipv4Gateway]",
+          "name": "[reference(resourceId('Microsoft.MobileNetwork/packetCoreControlPlanes', parameters('existingPacketCoreControlPlaneName')), '2022-03-01-preview').controlPlaneAccessInterface.name]"
+        }
+      }
+    }
+  ]
+}
